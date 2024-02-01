@@ -19,6 +19,6 @@ public class ScheduleController {
 
     @PostMapping("/schedule")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto){
-        return  scheduleService.createSchedule(requestDto);
+        return scheduleService.createSchedule(requestDto);
     }
 }
