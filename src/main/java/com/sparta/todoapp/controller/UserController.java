@@ -36,15 +36,15 @@ public class UserController {
     }
 
     @PostMapping("/user/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto, BindingResult bindingResult){
+    public ResponseEntity<String> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult){
 
-//        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-//        if(fieldErrors.size() > 0) {
-//            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-//                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-//            }
-//        }
-
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        if(fieldErrors.size() > 0) {
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body("회원가입 실패");
+        }
 
         return userService.signup(requestDto);
     }

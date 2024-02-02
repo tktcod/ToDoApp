@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.codec.ByteArrayEncoder;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,13 +20,12 @@ public class UserService {
 
 
     private final UserRepository userRepository;
-    //private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
     public ResponseEntity<String> signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
-        //String password = passwordEncoder.encode(requestDto.getPassword());
-        String password = requestDto.getPassword();
+        String password = passwordEncoder.encode(requestDto.getPassword());
 
 
         // 회원 중복 확인
