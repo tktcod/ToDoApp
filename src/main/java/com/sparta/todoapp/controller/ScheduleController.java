@@ -24,6 +24,12 @@ public class ScheduleController {
         return scheduleService.createSchedule(requestDto, userDetails.getUser());
     }
 
+    @PutMapping("/schedule/{id}")
+    public ScheduleResponseDto updateSchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return scheduleService.updateSchedule(id, requestDto, userDetails.getUser());
+    }
+
+
     @GetMapping("/schedule/{id}")
     public ScheduleResponseDto getSchedule(@PathVariable Long id){
         return scheduleService.getSchedule(id);

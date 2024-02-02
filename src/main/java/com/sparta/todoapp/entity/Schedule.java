@@ -33,7 +33,11 @@ public class Schedule extends Timestamped {
     public Schedule(ScheduleRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-        this.isDone = false;
         this.user = user;
+    }
+
+    public void update(ScheduleRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
     }
 }
