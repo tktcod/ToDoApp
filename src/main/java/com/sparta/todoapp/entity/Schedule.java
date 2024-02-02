@@ -26,9 +26,14 @@ public class Schedule extends Timestamped {
     @Column(nullable = false)
     private boolean isDone;
 
-    public Schedule(ScheduleRequestDto requestDto) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public Schedule(ScheduleRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.isDone = false;
+        this.user = user;
     }
 }

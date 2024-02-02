@@ -25,7 +25,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/user/login")
+    @GetMapping("/user/login-page")
     public String loginPage() {
         return "login";
     }
@@ -48,4 +48,6 @@ public class UserController {
 
         return userService.signup(requestDto);
     }
+
+
 }
