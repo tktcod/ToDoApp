@@ -73,4 +73,20 @@ public class ScheduleService {
 
         return responseDtoList;
     }
+
+    public Long deleteSchedule(Long id, User user) {
+
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("해당 할 일을 찾을 수 없습니다.")
+        );
+
+        // 작성자 확인
+        if(!schedule.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("해당 할 일 작성자가 아닙니다.");
+        } else {
+            scheduleRepository.delete(schedule);
+        }
+
+        return id;
+    }
 }

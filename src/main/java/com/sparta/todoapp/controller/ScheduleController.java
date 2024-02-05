@@ -42,4 +42,9 @@ public class ScheduleController {
     public List<ScheduleResponseDto> getAllSchedule(){
         return scheduleService.getAllSchedule();
     }
+
+    @DeleteMapping("/schedule/{id}")
+    public Long deleteSchedule(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return scheduleService.deleteSchedule(id, userDetails.getUser());
+    }
 }
