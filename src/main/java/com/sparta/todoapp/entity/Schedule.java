@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -24,7 +25,7 @@ public class Schedule extends Timestamped {
     private String contents;
 
     @Column(nullable = false)
-    private boolean isDone;
+    private Boolean isFinished = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -39,5 +40,9 @@ public class Schedule extends Timestamped {
     public void update(ScheduleRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+    }
+
+    public void update(Boolean isFinished) {
+        this.isFinished = isFinished;
     }
 }

@@ -5,7 +5,6 @@ import com.sparta.todoapp.entity.Schedule;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,6 +12,7 @@ import java.time.LocalDateTime;
 public class ScheduleResponseDto {
     private String title;
     private String contents;
+    private Boolean isFinished;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
@@ -20,6 +20,7 @@ public class ScheduleResponseDto {
     public ScheduleResponseDto(Schedule schedule){
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
+        this.isFinished = schedule.getIsFinished();
         this.createAt = schedule.getCreatedAt();
         this.modifiedAt = schedule.getModifiedAt();
     }

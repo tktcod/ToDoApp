@@ -3,7 +3,6 @@ package com.sparta.todoapp.controller;
 
 import com.sparta.todoapp.dto.ScheduleRequestDto;
 import com.sparta.todoapp.dto.ScheduleResponseDto;
-import com.sparta.todoapp.entity.Schedule;
 import com.sparta.todoapp.security.UserDetailsImpl;
 import com.sparta.todoapp.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +28,10 @@ public class ScheduleController {
         return scheduleService.updateSchedule(id, requestDto, userDetails.getUser());
     }
 
+    @PutMapping("/schedule/{id}/{isFinished}")
+    public ScheduleResponseDto updateTaskCompletionSchedule(@PathVariable Long id, @PathVariable Boolean isFinished, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return scheduleService.updateTaskCompletionSchedule(id, isFinished, userDetails.getUser());
+    }
 
     @GetMapping("/schedule/{id}")
     public ScheduleResponseDto getSchedule(@PathVariable Long id){

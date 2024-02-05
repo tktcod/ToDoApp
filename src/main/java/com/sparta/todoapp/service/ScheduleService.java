@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +37,22 @@ public class ScheduleService {
         }
 
         schedule.update(requestDto);
+        return new ScheduleResponseDto(schedule);
+    }
+
+    @Transactional
+    public ScheduleResponseDto updateTaskCompletionSchedule(Long id, Boolean isFinished, User user) {
+
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("해당 할 일을 찾을 수 없습니다.")
+        );
+
+        // 작성자 확인
+        if(!schedule.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("해당 할 일 작성자가 아닙니다.");
+        }
+
+        schedule.update(isFinished);
         return new ScheduleResponseDto(schedule);
     }
 
