@@ -2,6 +2,7 @@ package com.sparta.todoapp.entity;
 
 
 import com.sparta.todoapp.dto.CommentRequestDto;
+import com.sparta.todoapp.dto.ScheduleRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,5 +34,9 @@ public class Comment {
         this.contents = requestDto.getContents();
         this.user = user;
         this.schedule = schedule;
+    }
+
+    public void update(ScheduleRequestDto requestDto) {
+        this.contents = requestDto.getContents();
     }
 }

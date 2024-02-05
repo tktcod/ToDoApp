@@ -11,6 +11,7 @@ import com.sparta.todoapp.repository.CommentRepository;
 import com.sparta.todoapp.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,15 +21,30 @@ public class CommentService {
     private final ScheduleRepository scheduleRepository;
 
 
-    public CommentResponseDto createComment(Long id, CommentRequestDto requestDto, User user) {
+    public CommentResponseDto createComment(Long scheduleId, CommentRequestDto requestDto, User user) {
 
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new NullPointerException("해당 할 일을 찾을 수 없습니다.")
         );
 
         Comment comment = commentRepository.save(new Comment(requestDto, user, schedule));
         return new CommentResponseDto(comment);
 
+    }
+
+    @Transactional
+    public CommentResponseDto updateSchedule(Long id, ScheduleRequestDto requestDto, User user) {
+
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("해당 댓글을 찾을 수 없습니다.")
+        );
+
+        // 작성자 확인
+        if(!comment.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("해당 댓글 작성자가 아닙니다.");
+        }
+        comment.update(requestDto);
+        return new CommentResponseDto(comment);
     }
 
 }
