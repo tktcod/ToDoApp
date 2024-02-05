@@ -33,14 +33,14 @@ public class ScheduleController {
         return scheduleService.updateTaskCompletionSchedule(id, isFinished, userDetails.getUser());
     }
 
-    @GetMapping("/schedule/{id}")
-    public ScheduleResponseDto getSchedule(@PathVariable Long id){
-        return scheduleService.getSchedule(id);
-    }
-
     @GetMapping("/schedule")
     public List<ScheduleResponseDto> getAllSchedule(){
         return scheduleService.getAllSchedule();
+    }
+
+    @GetMapping("/schedule/{id}")
+    public ScheduleResponseDto getSchedule(@PathVariable Long id){
+        return scheduleService.getSchedule(id);
     }
 
     @DeleteMapping("/schedule/{id}")

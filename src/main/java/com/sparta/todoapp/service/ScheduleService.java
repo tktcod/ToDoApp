@@ -56,15 +56,8 @@ public class ScheduleService {
         return new ScheduleResponseDto(schedule);
     }
 
-    public ScheduleResponseDto getSchedule(Long id) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("해당 할 일이 존재하지 않습니다.")
-        );
-        return new ScheduleResponseDto(schedule);
-    }
-
     public List<ScheduleResponseDto> getAllSchedule() {
-        List<Schedule> scheduleList = scheduleRepository.findAll();
+        List<Schedule> scheduleList = scheduleRepository.findAllByOrderByCreatedAtDesc();
         List<ScheduleResponseDto> responseDtoList = new ArrayList<>();
 
         for (Schedule schedule : scheduleList) {
@@ -72,6 +65,13 @@ public class ScheduleService {
         }
 
         return responseDtoList;
+    }
+
+    public ScheduleResponseDto getSchedule(Long id) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("해당 할 일이 존재하지 않습니다.")
+        );
+        return new ScheduleResponseDto(schedule);
     }
 
     public Long deleteSchedule(Long id, User user) {
