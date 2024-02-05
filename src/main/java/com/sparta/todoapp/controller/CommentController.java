@@ -24,7 +24,12 @@ public class CommentController {
     }
 
     @PutMapping("/comment/{id}")
-    public CommentResponseDto updateSchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commentService.updateSchedule(id, requestDto, userDetails.getUser());
+    public CommentResponseDto updateComment(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return commentService.updateComment(id, requestDto, userDetails.getUser());
+    }
+
+    @DeleteMapping("/comment/{id}")
+    public Long deleteComment(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.deleteComment(id, userDetails.getUser());
     }
 }

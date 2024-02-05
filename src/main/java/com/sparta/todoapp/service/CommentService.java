@@ -33,7 +33,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto updateSchedule(Long id, ScheduleRequestDto requestDto, User user) {
+    public CommentResponseDto updateComment(Long id, ScheduleRequestDto requestDto, User user) {
 
         Comment comment = commentRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("해당 댓글을 찾을 수 없습니다.")
@@ -47,4 +47,20 @@ public class CommentService {
         return new CommentResponseDto(comment);
     }
 
+    public Long deleteComment(Long id, User user) {
+
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("해당 댓글을 찾을 수 없습니다.")
+        );
+
+        // 작성자 확인
+        if(!comment.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("해당 댓글 작성자가 아닙니다.");
+        } else {
+            commentRepository.delete(comment);
+        }
+
+        return id;
+
+    }
 }
