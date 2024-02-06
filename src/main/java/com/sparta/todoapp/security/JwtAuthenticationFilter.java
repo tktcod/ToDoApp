@@ -57,10 +57,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.setStatus(401);
+        response.setStatus(400);
 
         // 응답 메시지를 JSON 형식으로 작성
-        String jsonResponse = "{\"message\": \"로그인 실패\"}";
+        String jsonResponse = "{\"message\": \"회원을 찾을 수 없습니다.\"}";
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(jsonResponse);
