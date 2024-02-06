@@ -18,7 +18,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j(topic = "JWT 검증 및 인가")
@@ -33,8 +35,23 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
+
+        String method = req.getMethod();
+        String requestURI = req.getRequestURI();
+
+        List<String> exemptedUrls = Arrays.asList(
+                "/api/user/signup",
+                "/api/user/login"
+        );
+
+        if ("GET".equals(method) || exemptedUrls.contains(requestURI)) {
+            // GET 요청이거나 exemptedUrls에 포함된 주소로 요청된 경우
+            filterChain.doFilter(req, res); // 다음 필터로 요청 전달
+            return;
+        }
 
         String tokenValue = jwtUtil.getJwtFromHeader(req);
 
@@ -72,6 +89,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         response.put("message", errorMessage);
         res.getWriter().write(objectMapper.writeValueAsString(response));
     }
+
 
 
     // 인증 처리
