@@ -7,11 +7,15 @@ import com.sparta.todoapp.entity.Schedule;
 import com.sparta.todoapp.entity.User;
 import com.sparta.todoapp.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -74,7 +78,8 @@ public class ScheduleService {
         return new ScheduleResponseDto(schedule);
     }
 
-    public Long deleteSchedule(Long id, User user) {
+    public ResponseEntity<Map<String, String>> deleteSchedule(Long id, User user) {
+        Map<String, String> responseBody = new HashMap<>();
 
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("해당 할 일을 찾을 수 없습니다.")
@@ -87,6 +92,7 @@ public class ScheduleService {
             scheduleRepository.delete(schedule);
         }
 
-        return id;
+        responseBody.put("message", "할 일이 성공적으로 삭제되었습니다.");
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 }
