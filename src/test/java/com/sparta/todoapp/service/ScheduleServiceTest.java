@@ -190,6 +190,63 @@ class ScheduleServiceTest {
             // Then
             assertEquals(notFinished, responseDto.getIsFinished());
         }
+
+        @Test
+        @DisplayName("updateTaskCompletionSchedule failure 1 - 해당 할일 없음")
+        public void updateTaskCompletionScheduleFailure1() {
+            // Given
+            Long scheduleId = 1L;
+
+            Boolean finished = true;
+            Boolean notFinished = false;
+
+            User user = new User();
+            user.setId(1L);
+
+            Schedule schedule = new Schedule();
+            schedule.setUser(user);
+            schedule.setIsFinished(notFinished);
+
+            given(scheduleRepository.findById(scheduleId)).willReturn(Optional.empty());
+
+            // When
+            Exception exception = assertThrows(NullPointerException.class,
+                    () -> scheduleService.updateTaskCompletionSchedule(scheduleId, finished, user)
+            );
+
+            // Then
+            assertEquals("해당 할 일을 찾을 수 없습니다.", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("updateTaskCompletionSchedule failure 2 - 해당 할일 작성자가 아님")
+        public void updateTaskCompletionScheduleFailure2() {
+            // Given
+            Long scheduleId = 1L;
+
+            Boolean finished = true;
+            Boolean notFinished = false;
+
+            User currentUser = new User();
+            currentUser.setId(1L);
+            User otherUser = new User();
+            otherUser.setId(2L);
+
+            Schedule schedule = new Schedule();
+            schedule.setId(scheduleId);
+            schedule.setUser(otherUser);
+            schedule.setIsFinished(notFinished);
+
+            given(scheduleRepository.findById(scheduleId)).willReturn(Optional.of(schedule));
+
+            // When
+            Exception exception = assertThrows(IllegalArgumentException.class,
+                    () -> scheduleService.updateTaskCompletionSchedule(scheduleId, finished, currentUser)
+            );
+
+            // Then
+            assertEquals("해당 할 일 작성자가 아닙니다.", exception.getMessage());
+        }
     }
 
     @Nested
