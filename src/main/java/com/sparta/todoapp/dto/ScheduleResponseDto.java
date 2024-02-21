@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class ScheduleResponseDto {
+    private Long id;
     private String title;
     private String contents;
     private Boolean isFinished;
@@ -18,6 +19,7 @@ public class ScheduleResponseDto {
 
 
     public ScheduleResponseDto(Schedule schedule){
+        this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
         this.isFinished = schedule.getIsFinished();
