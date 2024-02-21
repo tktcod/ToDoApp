@@ -181,4 +181,26 @@ class ScheduleServiceTest {
             assertEquals("해당 할 일이 존재하지 않습니다.", exception.getMessage());
         }
     }
+
+    @Test
+    @DisplayName("getAllSchedule method")
+    public void getAllSchedule() {
+        // Given
+        List<Schedule> mockScheduleList = new ArrayList<>();
+        User mockUser = new User();
+        mockScheduleList.add(new Schedule(new ScheduleRequestDto("Title 1", "Content 1"), mockUser));
+        mockScheduleList.add(new Schedule(new ScheduleRequestDto("Title 2", "Content 2"), mockUser));
+
+        given(scheduleRepository.findAllByOrderByCreatedAtDesc()).willReturn(mockScheduleList);
+
+        // When
+        List<ScheduleResponseDto> responseDtoList = scheduleService.getAllSchedule();
+
+        // Then
+        assertEquals(2, responseDtoList.size());
+        assertEquals("Title 1", responseDtoList.get(0).getTitle());
+        assertEquals("Content 1", responseDtoList.get(0).getContents());
+        assertEquals("Title 2", responseDtoList.get(1).getTitle());
+        assertEquals("Content 2", responseDtoList.get(1).getContents());
+    }
 }
