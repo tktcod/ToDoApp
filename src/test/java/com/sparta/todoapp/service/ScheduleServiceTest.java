@@ -342,5 +342,51 @@ class ScheduleServiceTest {
             assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
             assertEquals("할 일이 성공적으로 삭제되었습니다.", responseEntity.getBody().get("message"));
         }
+
+        @Test
+        @DisplayName("deleteSchedule failure 1 - 해당 할일 없음")
+        public void deleteScheduleFailure1() {
+            // Given
+            Long scheduleId = 1L;
+
+            User user = new User();
+            user.setId(1L);
+
+            given(scheduleRepository.findById(scheduleId)).willReturn(Optional.empty());
+
+            // When
+            Exception exception = assertThrows(NullPointerException.class,
+                    () -> scheduleService.deleteSchedule(scheduleId, user)
+            );
+
+            // Then
+            assertEquals("해당 할 일을 찾을 수 없습니다.", exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("deleteSchedule failure 2 - 해당 할일 작성자가 아님")
+        public void deleteScheduleFailure2() {
+            // Given
+            Long scheduleId = 1L;
+
+            User currentUser = new User();
+            currentUser.setId(1L);
+            User otherUser = new User();
+            otherUser.setId(2L);
+
+            Schedule schedule = new Schedule();
+            schedule.setId(scheduleId);
+            schedule.setUser(otherUser);
+
+            given(scheduleRepository.findById(scheduleId)).willReturn(Optional.of(schedule));
+
+            // When
+            Exception exception = assertThrows(IllegalArgumentException.class,
+                    () -> scheduleService.deleteSchedule(scheduleId,  currentUser)
+            );
+
+            // Then
+            assertEquals("해당 할 일 작성자가 아닙니다.", exception.getMessage());
+        }
     }
 }
