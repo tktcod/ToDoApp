@@ -12,16 +12,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-
 
 @ExtendWith(MockitoExtension.class)
 class ScheduleServiceTest {
@@ -311,6 +313,34 @@ class ScheduleServiceTest {
             assertEquals("Content 1", responseDtoList.get(0).getContents());
             assertEquals("Title 2", responseDtoList.get(1).getTitle());
             assertEquals("Content 2", responseDtoList.get(1).getContents());
+        }
+    }
+
+
+    @Nested
+    @DisplayName("deleteSchedule method")
+    class deleteSchedule {
+        @Test
+        @DisplayName("deleteSchedule success")
+        public void deleteScheduleSuccess() {
+            // Given
+            Long scheduleId = 1L;
+
+            User user = new User();
+            user.setId(1L);
+
+            Schedule schedule = new Schedule();
+            schedule.setId(scheduleId);
+            schedule.setUser(user);
+
+            given(scheduleRepository.findById(scheduleId)).willReturn(Optional.of(schedule));
+
+            // When
+            ResponseEntity<Map<String, String>> responseEntity = scheduleService.deleteSchedule(scheduleId, user);
+
+            // Then
+            assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+            assertEquals("할 일이 성공적으로 삭제되었습니다.", responseEntity.getBody().get("message"));
         }
     }
 }
