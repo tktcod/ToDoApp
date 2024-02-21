@@ -36,7 +36,6 @@ class ScheduleServiceTest {
     public void createSchedule() {
         // Given
         User user = new User();
-        user.setId(1L);
 
         String title = "testTitle";
         String contents = "testContent";
@@ -58,11 +57,10 @@ class ScheduleServiceTest {
     @DisplayName("할일 수정 성공")
     public void updateScheduleSuccess() {
         // Given
-        Long scheduleId = 1L;
-
         User user = new User();
         user.setId(1L);
 
+        Long scheduleId = 1L;
         String title = "Updated Title";
         String contents = "Updated Contents";
         ScheduleRequestDto requestDto = new ScheduleRequestDto(title, contents);
@@ -86,11 +84,10 @@ class ScheduleServiceTest {
     @DisplayName("할일 수정 실패 1 - 해당 할일 없음")
     public void updateScheduleFailure1() {
         // Given
-        Long scheduleId = 1L;
-
         User user = new User();
         user.setId(1L);
 
+        Long scheduleId = 1L;
         String title = "Updated Title";
         String contents = "Updated Contents";
         ScheduleRequestDto requestDto = new ScheduleRequestDto(title, contents);
@@ -113,13 +110,12 @@ class ScheduleServiceTest {
     @DisplayName("할일 수정 실패 2 - 해당 할일 작성자가 아님")
     public void updateScheduleFailure2() {
         // Given
-        Long scheduleId = 1L;
-
         User currentUser = new User();
         currentUser.setId(1L);
         User otherUser = new User();
         otherUser.setId(2L);
 
+        Long scheduleId = 1L;
         Schedule schedule = new Schedule();
         schedule.setUser(otherUser); // 다른 사용자가 작성한 할일
 
@@ -136,5 +132,44 @@ class ScheduleServiceTest {
 
         // Then
         assertEquals("해당 할 일 작성자가 아닙니다.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("할일 조회 성공")
+    public void getScheduleSuccess() {
+        // Given
+        Long scheduleId = 1L;
+        String title = "Schedule title";
+        String contents = "Schedule contents";
+        Schedule schedule = new Schedule();
+        schedule.setId(scheduleId);
+        schedule.setTitle(title);
+        schedule.setContents(contents);
+
+        given(scheduleRepository.findById(scheduleId)).willReturn(Optional.of(schedule));
+
+        // When
+        ScheduleResponseDto responseDto = scheduleService.getSchedule(scheduleId);
+
+        // Then
+        assertEquals(title, responseDto.getTitle());
+        assertEquals(contents, responseDto.getContents());
+    }
+
+    @Test
+    @DisplayName("할일 조회 실패")
+    public void getScheduleFailure() {
+        // Given
+        Long scheduleId = 1L;
+
+        given(scheduleRepository.findById(scheduleId)).willReturn(Optional.empty());
+
+        // When
+        Exception exception = assertThrows(NullPointerException.class,
+                () -> scheduleService.getSchedule(scheduleId)
+        );
+
+        // Then
+        assertEquals("해당 할 일이 존재하지 않습니다.", exception.getMessage());
     }
 }
