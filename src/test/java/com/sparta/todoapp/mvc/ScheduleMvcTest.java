@@ -3,7 +3,10 @@ package com.sparta.todoapp.mvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.todoapp.controller.ScheduleController;
 import com.sparta.todoapp.dto.ScheduleRequestDto;
+import com.sparta.todoapp.dto.ScheduleResponseDto;
+import com.sparta.todoapp.entity.Schedule;
 import com.sparta.todoapp.entity.User;
+import com.sparta.todoapp.repository.ScheduleRepository;
 import com.sparta.todoapp.security.UserDetailsImpl;
 import com.sparta.todoapp.security.WebSecurityConfig;
 import com.sparta.todoapp.service.ScheduleService;
@@ -25,9 +28,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.security.Principal;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(
@@ -55,6 +63,9 @@ public class ScheduleMvcTest {
     @MockBean
     private ScheduleService scheduleService;
 
+    @MockBean
+    private ScheduleRepository scheduleRepository;
+
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders
@@ -71,9 +82,11 @@ public class ScheduleMvcTest {
         UserDetailsImpl testUserDetails = new UserDetailsImpl(testUser);
         mockPrincipal = new UsernamePasswordAuthenticationToken(testUserDetails, "");
     }
+
     @Nested
     @DisplayName("createSchedule Method")
     class createSchedule {
+
         @BeforeEach
         void setUp() {
             mockUserSetup();
@@ -130,6 +143,37 @@ public class ScheduleMvcTest {
                     )
                     .andExpect(status().isBadRequest())
                     .andDo(print());
+        }
+    }
+
+    @Nested
+    @DisplayName("updateSchedule Method")
+    class updateSchedule {
+
+        @Test
+        @DisplayName("Update Schedule Success")
+        void updateScheduleSuccess() throws Exception{
+            // Given
+            Long scheduleId = 1L;
+            String title = "Updated Title";
+            String contents = "Updated Contents";
+            ScheduleRequestDto requestDto = new ScheduleRequestDto(title, contents);
+
+            UserDetailsImpl userDetails = new UserDetailsImpl(new User("testUser", "password"));
+
+            given(scheduleService.updateSchedule(anyLong(), any(ScheduleRequestDto.class), any(User.class)))
+                    .willReturn(new ScheduleResponseDto(new Schedule(requestDto, userDetails.getUser())));
+
+            // When -Then
+            mockMvc.perform(put("/api/schedule/{id}", scheduleId)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requestDto))
+                            .principal(new UsernamePasswordAuthenticationToken(userDetails, "")))
+                    .andExpect(status().isOk())
+                    .andDo(print())
+                    .andExpect(jsonPath("$.title").value(title))
+                    .andExpect(jsonPath("$.contents").value(contents));
+
         }
     }
 }
